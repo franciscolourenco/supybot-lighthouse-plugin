@@ -55,6 +55,20 @@ class Lighthouse(callbacks.Plugin):
             url = format('http://hunch.lighthouseapp.com/projects/%s/tickets', projectId)
         irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
     tickets = wrap(tickets, ['inChannel'])
+
+    def new(self, irc, msg, args, channel):
+        """[<channel>]
+
+        Returns the link of lighouse new ticket page of <channel>.  <channel> is
+        only necessary if the message isn't sent in the channel itself.
+        """
+        url = False
+        projectId = conf.supybot.plugins.Lighthouse.projectId.get(channel)()
+        
+        if (projectId):    
+            url = format('http://hunch.lighthouseapp.com/projects/%s/tickets/new', projectId)
+        irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
+    new = wrap(new, ['inChannel'])
     
     def find(self, irc, msg, args, channel, query):
         """[<channel>][<query>] 
@@ -69,6 +83,8 @@ class Lighthouse(callbacks.Plugin):
             url = format('http://hunch.lighthouseapp.com/projects/%s/tickets?q=%s', projectId, urllib.quote_plus(query))
         irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
     find = wrap(find, ['inChannel', 'text'])
+    
+    
 
 Class = Lighthouse
 
