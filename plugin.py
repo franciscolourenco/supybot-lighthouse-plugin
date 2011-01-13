@@ -27,7 +27,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 ###
+import json
 import urllib
+import urllib2
 
 import supybot.conf as conf
 import supybot.utils as utils
@@ -53,6 +55,9 @@ class Lighthouse(callbacks.Plugin):
         
         if (projectId):    
             url = format('http://hunch.lighthouseapp.com/projects/%s/tickets', projectId)
+            if (conf.supybot.plugins.Lighthouse.shortenLinks.get(channel)()):
+                url = self._shortenUrl(url)
+                            
         irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
     tickets = wrap(tickets, ['inChannel'])
 
@@ -67,6 +72,9 @@ class Lighthouse(callbacks.Plugin):
         
         if (projectId):    
             url = format('http://hunch.lighthouseapp.com/projects/%s/tickets/new', projectId)
+            if (conf.supybot.plugins.Lighthouse.shortenLinks.get(channel)()):
+                url = self._shortenUrl(url)
+                            
         irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
     new = wrap(new, ['inChannel'])
     
@@ -81,10 +89,18 @@ class Lighthouse(callbacks.Plugin):
 
         if (projectId):
             url = format('http://hunch.lighthouseapp.com/projects/%s/tickets?q=%s', projectId, urllib.quote_plus(query))
+            if (conf.supybot.plugins.Lighthouse.shortenLinks.get(channel)()):
+                url = self._shortenUrl(url)
+            
         irc.reply(url or 'First you need to set a lighthouse project id for this channel using: config channel <channel> plugins.lighthouse.projectId <project id>')
     find = wrap(find, ['inChannel', 'text'])
     
-    
+    def _shortenUrl(self, url):
+        gurl = 'http://goo.gl/api/url?url=%s' % urllib.quote(url)
+        req = urllib2.Request(gurl, data='')
+        req.add_header('User-Agent', 'toolbar')
+        results = json.load(urllib2.urlopen(req))
+        return results['short_url']
 
 Class = Lighthouse
 

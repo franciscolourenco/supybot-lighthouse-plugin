@@ -46,6 +46,10 @@ conf.registerChannelValue(Lighthouse, 'projectId',
     registry.String('', """Determines which RSS feeds
     should be announced in the channel; valid input is a list of strings
     (either registered RSS feeds or RSS feed URLs) separated by spaces."""))
+
+conf.registerChannelValue(Lighthouse, 'shortenLinks',
+    registry.Boolean(True, """Determines whether the links will be shorten or not.
+    Currently using goo.gl shortening service"""))
 # This is where your configuration variables (if any) should go.  For example:
 # conf.registerGlobalValue(Lighthouse, 'someConfigVariableName',
 #     registry.Boolean(False, """Help for someConfigVariableName."""))
