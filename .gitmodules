@@ -1,0 +1,4 @@
+
+[submodule "local/python-lighthouse-api"]
+	path = local/python-lighthouse-api
+	url = git@github.com:aristidesfl/python-lighthouse-api.git
